@@ -33,7 +33,7 @@ dependencies {
 
     // Database driver
     implementation 'org.postgresql:postgresql:42.7.3'
-    implementation('org.apache.httpcomponents.client5:httpclient5:5.4.1') {
+    implementation('org.apache.httpcomponents.client5:httpclient5:5.4.3') {
         exclude group: 'org.apache.httpcomponents.core5', module: 'httpcore5'
     }
     implementation 'org.apache.httpcomponents.core5:httpcore5:5.3.1'
@@ -67,6 +67,9 @@ dependencies {
     // Image processing
     implementation 'org.imgscalr:imgscalr-lib:4.2'
 
+    implementation 'org.apache.tomcat:tomcat-catalina:10.1.47'
+    implementation 'org.apache.tomcat:tomcat-servlet-api:10.1.47'
+
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
     implementation 'org.springframework.vault:spring-vault-core'
 
@@ -80,6 +83,8 @@ dependencies {
         implementation 'org.springframework:spring-context:6.2.11'
         implementation 'ch.qos.logback:logback-core:1.5.19'
         implementation 'ch.qos.logback:logback-classic:1.5.19'
+        implementation 'ch.qos.logback:logback-core:1.5.25'
+        implementation 'ch.qos.logback:logback-classic:1.5.25'
     }
 }
 
