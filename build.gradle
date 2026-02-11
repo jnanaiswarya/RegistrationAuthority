@@ -59,8 +59,8 @@ dependencies {
     // Optional dev tools
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
-    // Servlet container (choose one: providedRuntime for WAR, implementation for JAR)
-    providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+   
+    
 
     // Encryption support
     implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.3'
@@ -74,15 +74,11 @@ dependencies {
     implementation 'org.springframework.vault:spring-vault-core'
 
     // Version constraints for transitive dependencies
-    constraints {
-        implementation 'org.apache.tomcat.embed:tomcat-embed-core:10.1.47'
-        implementation 'org.apache.tomcat:tomcat-coyote:10.1.47'
-        implementation 'org.apache.tomcat:tomcat-catalina:10.1.47'
-        implementation 'org.apache.tomcat:tomcat-util:10.1.47'
-        implementation 'org.apache.tomcat.embed:tomcat-embed-websocket:10.1.47'
-        implementation 'ch.qos.logback:logback-core:1.5.19'
-        implementation 'ch.qos.logback:logback-classic:1.5.19'
-    }
+    implementation('org.springframework.boot:spring-boot-starter-web') {
+    exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
+}
+implementation 'org.springframework.boot:spring-boot-starter-undertow'
+
 }
 
 
