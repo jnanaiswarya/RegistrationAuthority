@@ -33,6 +33,7 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ug.daes.ra.asserts.RAServiceAsserts;
+import ug.daes.ra.config.SecureUrlValidator;
 import ug.daes.ra.dto.ApiResponse;
 import ug.daes.ra.dto.CertificateCountDTO;
 import ug.daes.ra.dto.CountResponseDTO;
@@ -117,6 +118,9 @@ public class SubscriberRAServiceIfaceImpl implements SubscriberRAServiceIface {
 
 	@Autowired
 	RAPKIServiceIfaceImpl rapkiServiceIfaceImpl;
+	@Autowired
+	private SecureUrlValidator secureUrlValidator;
+
 
 	/*
 	 * (non-Javadoc)
@@ -212,27 +216,61 @@ public class SubscriberRAServiceIfaceImpl implements SubscriberRAServiceIface {
 		}
 	}
 
-	public String getBase64String(String uri) throws NoSuchMessageException, Exception {
+//	public String getBase64String(String uri) throws NoSuchMessageException, Exception {
+//		try {
+//			logger.info(CLASS + " :: getBase64String() :: URI ::" + uri);
+//
+//			HttpHeaders headersForGet = new HttpHeaders();
+//			HttpEntity<Object> requestEntityForGet = new HttpEntity<>(headersForGet);
+//
+//			ResponseEntity<Resource> downloadUrlResult = restTemplate.exchange(uri, HttpMethod.GET, requestEntityForGet,
+//					Resource.class);
+//			logger.info(
+//					CLASS + " :: getBase64String() :: downloadUrlResult ::" + downloadUrlResult.getStatusCodeValue());
+//			byte[] buffer = IOUtils.toByteArray(downloadUrlResult.getBody().getInputStream());
+//			// String selfie = new String(Base64.getEncoder().encode(buffer));
+//			return new String(Base64.getEncoder().encode(buffer));
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			logger.error(CLASS + " getBase64String() :: exception {} ", e.getMessage());
+//			throw new Exception(messageSource.getMessage("api.error.something.went.wrong.please.try.after.sometime",
+//					null, Locale.ENGLISH));
+//		}
+//	}
+
+
+	public String getBase64String(String uri) throws Exception {
+
 		try {
-			logger.info(CLASS + " :: getBase64String() :: URI ::" + uri);
+			logger.info(CLASS + " :: getBase64String() :: URI :: {}", uri);
 
-			HttpHeaders headersForGet = new HttpHeaders();
-			HttpEntity<Object> requestEntityForGet = new HttpEntity<>(headersForGet);
+			// 🔐 Validate BEFORE calling
+			secureUrlValidator.validate(uri);
 
-			ResponseEntity<Resource> downloadUrlResult = restTemplate.exchange(uri, HttpMethod.GET, requestEntityForGet,
-					Resource.class);
-			logger.info(
-					CLASS + " :: getBase64String() :: downloadUrlResult ::" + downloadUrlResult.getStatusCodeValue());
-			byte[] buffer = IOUtils.toByteArray(downloadUrlResult.getBody().getInputStream());
-			// String selfie = new String(Base64.getEncoder().encode(buffer));
-			return new String(Base64.getEncoder().encode(buffer));
+			HttpHeaders headers = new HttpHeaders();
+			HttpEntity<Object> entity = new HttpEntity<>(headers);
+
+			ResponseEntity<Resource> response =
+					restTemplate.exchange(uri, HttpMethod.GET, entity, Resource.class);
+
+			byte[] buffer =
+					IOUtils.toByteArray(response.getBody().getInputStream());
+
+			return Base64.getEncoder().encodeToString(buffer);
+
 		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error(CLASS + " getBase64String() :: exception {} ", e.getMessage());
-			throw new Exception(messageSource.getMessage("api.error.something.went.wrong.please.try.after.sometime",
-					null, Locale.ENGLISH));
+			logger.error("getBase64String() :: exception", e);
+
+			throw new Exception(
+					messageSource.getMessage(
+							"api.error.something.went.wrong.please.try.after.sometime",
+							null,
+							Locale.ENGLISH
+					)
+			);
 		}
 	}
+
 
 	/*
 	 * (non-Javadoc)
