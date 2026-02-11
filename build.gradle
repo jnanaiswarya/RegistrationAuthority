@@ -69,6 +69,16 @@ dependencies {
 
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
     implementation 'org.springframework.vault:spring-vault-core'
+
+    // Version constraints for Spring Framework dependencies
+    constraints {
+        implementation 'org.springframework:spring-core:6.2.11'
+        implementation 'org.springframework:spring-webmvc:6.2.11'
+        implementation 'org.springframework:spring-web:6.2.11'
+        implementation 'org.springframework:spring-beans:6.2.11'
+        implementation 'org.springframework:spring-expression:6.2.11'
+        implementation 'org.springframework:spring-context:6.2.11'
+    }
 }
 
 
