@@ -67,6 +67,9 @@ dependencies {
     // Image processing
     implementation 'org.imgscalr:imgscalr-lib:4.2'
 
+    implementation 'org.apache.tomcat:tomcat-catalina:10.1.47'
+    implementation 'org.apache.tomcat:tomcat-servlet-api:10.1.47'
+
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
     implementation 'org.springframework.vault:spring-vault-core'
 
