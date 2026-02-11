@@ -90,6 +90,7 @@ implementation 'org.apache.httpcomponents.client5:httpclient5:5.4.3'
         implementation 'org.apache.tomcat:tomcat-coyote:10.1.47'
         implementation 'org.apache.tomcat:tomcat-util:10.1.47'
         implementation 'org.apache.tomcat.embed:tomcat-embed-websocket:10.1.47'
+        implementation 'org.apache.commons:commons-lang3:3.18.0'
     }
 }
 
