@@ -32,6 +32,8 @@ dependencies {
     implementation files("DAESLogIntegrity.jar")
 
     // Database driver
+    implementation 'org.apache.commons:commons-lang3:3.18.0'
+
     implementation 'org.postgresql:postgresql:42.7.3'
     implementation 'org.apache.httpcomponents.client5:httpclient5:5.4.3'
 
