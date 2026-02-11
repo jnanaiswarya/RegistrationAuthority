@@ -9,12 +9,16 @@ import ug.daes.ra.dto.ApiResponse;
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.security.spec.KeySpec;
 import java.sql.Timestamp;
 import java.text.ParseException;
@@ -273,26 +277,66 @@ public class AppUtil {
 		return salt.getBytes();
 	}
 	
-	public static String encrypt(String plainText) {
-		String secretKey = "DiGiTaLtRuStTeChNoLoGy";
-		try {
-			byte[] iv = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-			IvParameterSpec ivspec = new IvParameterSpec(iv);
-//			PBKDF2WithHmacSHA256
-			SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
-			KeySpec spec = new PBEKeySpec(secretKey.toCharArray(), getSalt(plainText), 65536, 256);
-			SecretKey tmp = factory.generateSecret(spec);
-			SecretKeySpec secretKeySpec = new SecretKeySpec(tmp.getEncoded(), "AES");
-	
-			Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-			cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec, ivspec);
-			return Base64.getEncoder().encodeToString(cipher.doFinal(plainText.getBytes("UTF-8")));
-		} catch (Exception e) {
-			System.out.println("Error while encrypting: " + e.toString());
-		}
-		return null;
-	}
-	
+//	public static String encrypt(String plainText) {
+//		String secretKey = "DiGiTaLtRuStTeChNoLoGy";
+//		try {
+//			byte[] iv = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+//			IvParameterSpec ivspec = new IvParameterSpec(iv);
+////			PBKDF2WithHmacSHA256
+//			SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+//			KeySpec spec = new PBEKeySpec(secretKey.toCharArray(), getSalt(plainText), 65536, 256);
+//			SecretKey tmp = factory.generateSecret(spec);
+//			SecretKeySpec secretKeySpec = new SecretKeySpec(tmp.getEncoded(), "AES");
+//
+//			Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+//			cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec, ivspec);
+//			return Base64.getEncoder().encodeToString(cipher.doFinal(plainText.getBytes("UTF-8")));
+//		} catch (Exception e) {
+//			System.out.println("Error while encrypting: " + e.toString());
+//		}
+//		return null;
+//	}
+//
+
+public static String encrypt(String plainText) {
+    String password = "DiGiTaLtRuStTeChNoLoGy";
+
+    try {
+        // Generate random salt
+        byte[] salt = new byte[16];
+        SecureRandom random = new SecureRandom();
+        random.nextBytes(salt);
+
+        // Derive key using PBKDF2
+        SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
+        KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, 65536, 256);
+        SecretKey tmp = factory.generateSecret(spec);
+        SecretKeySpec secretKey = new SecretKeySpec(tmp.getEncoded(), "AES");
+
+        // Generate random IV (12 bytes recommended for GCM)
+        byte[] iv = new byte[12];
+        random.nextBytes(iv);
+        GCMParameterSpec gcmSpec = new GCMParameterSpec(128, iv);
+
+        // AES-GCM cipher
+        Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+        cipher.init(Cipher.ENCRYPT_MODE, secretKey, gcmSpec);
+
+        byte[] cipherText = cipher.doFinal(plainText.getBytes(StandardCharsets.UTF_8));
+
+        // Combine salt + IV + ciphertext
+        ByteBuffer byteBuffer = ByteBuffer.allocate(salt.length + iv.length + cipherText.length);
+        byteBuffer.put(salt);
+        byteBuffer.put(iv);
+        byteBuffer.put(cipherText);
+
+        return Base64.getEncoder().encodeToString(byteBuffer.array());
+
+    } catch (Exception e) {
+        throw new RuntimeException("Error while encrypting", e);
+    }
+}
+
 	public static String getDate(){
     	SimpleDateFormat smpdate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Date date = new Date();

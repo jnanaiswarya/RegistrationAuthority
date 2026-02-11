@@ -250,8 +250,7 @@ public class SubscriberRAServiceIfaceImpl implements SubscriberRAServiceIface {
 			HttpHeaders headers = new HttpHeaders();
 			HttpEntity<Object> entity = new HttpEntity<>(headers);
 
-			ResponseEntity<Resource> response =
-					restTemplate.exchange(uri, HttpMethod.GET, entity, Resource.class);
+			ResponseEntity<Resource> response = restTemplate.exchange(uri, HttpMethod.GET, entity, Resource.class);
 
 			byte[] buffer =
 					IOUtils.toByteArray(response.getBody().getInputStream());
