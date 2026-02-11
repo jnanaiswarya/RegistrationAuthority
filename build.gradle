@@ -85,6 +85,10 @@ dependencies {
         implementation 'ch.qos.logback:logback-classic:1.5.19'
         implementation 'ch.qos.logback:logback-core:1.5.25'
         implementation 'ch.qos.logback:logback-classic:1.5.25'
+        implementation 'org.apache.tomcat.embed:tomcat-embed-core:10.1.47'
+        implementation 'org.apache.tomcat:tomcat-coyote:10.1.47'
+        implementation 'org.apache.tomcat:tomcat-util:10.1.47'
+        implementation 'org.apache.tomcat.embed:tomcat-embed-websocket:10.1.47'
     }
 }
 
