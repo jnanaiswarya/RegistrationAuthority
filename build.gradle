@@ -70,6 +70,15 @@ dependencies {
 
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
     implementation 'org.springframework.vault:spring-vault-core'
+
+    // Version constraints for transitive dependencies
+    constraints {
+        implementation 'org.apache.tomcat.embed:tomcat-embed-core:10.1.47'
+        implementation 'org.apache.tomcat:tomcat-coyote:10.1.47'
+        implementation 'org.apache.tomcat:tomcat-catalina:10.1.47'
+        implementation 'org.apache.tomcat:tomcat-util:10.1.47'
+        implementation 'org.apache.tomcat.embed:tomcat-embed-websocket:10.1.47'
+    }
 }
 
 
